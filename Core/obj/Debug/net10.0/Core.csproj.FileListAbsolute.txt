@@ -1,0 +1,12 @@
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/bin/Debug/net10.0/Core.deps.json
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/bin/Debug/net10.0/Core.dll
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/bin/Debug/net10.0/Core.pdb
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net10.0/Core.csproj.AssemblyReference.cache
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net10.0/Core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net10.0/Core.AssemblyInfoInputs.cache
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net10.0/Core.AssemblyInfo.cs
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net10.0/Core.csproj.CoreCompileInputs.cache
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net10.0/Core.dll
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net10.0/refint/Core.dll
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net10.0/Core.pdb
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net10.0/ref/Core.dll
