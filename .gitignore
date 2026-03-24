@@ -1,0 +1,38 @@
+# Build folders
+bin/
+obj/
+
+# Rider / IntelliJ
+.idea/
+*.sln.iml
+
+# User-specific files
+*.user
+*.suo
+
+# Logs
+*.log
+
+# Test results
+TestResults/
+*.trx
+
+# OS files
+.DS_Store
+
+# NuGet
+*.nupkg
+packages/
+
+# Coverage
+coverage/
+
+# ReSharper
+_ReSharper*
+*.DotSettings.user
+
+# VS Code (if used)
+.vscode/
+
+# Mac
+*.DS_Store
