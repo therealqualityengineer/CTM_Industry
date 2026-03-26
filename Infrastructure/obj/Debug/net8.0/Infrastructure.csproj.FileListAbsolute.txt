@@ -13,3 +13,4 @@
 /Users/arunramalingam/RiderProjects/CTM_Industry/Infrastructure/obj/Debug/net8.0/Infrastructure.pdb
 /Users/arunramalingam/RiderProjects/CTM_Industry/Infrastructure/obj/Debug/net8.0/ref/Infrastructure.dll
 /Users/arunramalingam/RiderProjects/CTM_Industry/Infrastructure/obj/Debug/net8.0/Infrastructure.csproj.CopyComplete
+/Users/arunramalingam/RiderProjects/CTM_Industry/Infrastructure/obj/Debug/net8.0/Infrastructure.sourcelink.json

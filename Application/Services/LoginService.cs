@@ -23,12 +23,14 @@ public class LoginService : ILoginService
             : user;
 
         var password = _config.Password;
+        
+        var envBrowser = Environment.GetEnvironmentVariable("BROWSER");
 
-        var browserName = browser.Equals("default", StringComparison.InvariantCultureIgnoreCase)
-            ? _config.Browser
-            : browser;
+        var browerName = !string.IsNullOrEmpty(envBrowser) ? envBrowser :
+            browser.Equals("default", StringComparison.OrdinalIgnoreCase) ? _config.Browser :
+            browser;
 
-        _manager.InitDriver(browserName);
+        _manager.InitDriver(browerName);
 
         var driver = _manager.GetDriver(); 
         driver.Navigate().GoToUrl(_config.LoginUrl);

@@ -191,3 +191,4 @@
 /Users/arunramalingam/RiderProjects/CTM_Industry/Tests/obj/Debug/net8.0/ref/Tests.dll
 /Users/arunramalingam/RiderProjects/CTM_Industry/Tests/obj/Debug/net8.0/Tests.csproj.CopyComplete
 /Users/arunramalingam/RiderProjects/CTM_Industry/Tests/bin/Debug/net8.0/SeleniumExtras.WaitHelpers.dll
+/Users/arunramalingam/RiderProjects/CTM_Industry/Tests/obj/Debug/net8.0/Tests.sourcelink.json

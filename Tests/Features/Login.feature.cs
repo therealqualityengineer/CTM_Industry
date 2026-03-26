@@ -129,7 +129,7 @@ namespace Tests.Features
             {
                 await this.ScenarioStartAsync();
 #line 4
-        await testRunner.GivenAsync("user login to \'default\' site with \'default\' credential to the \'safari\' browser", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+        await testRunner.GivenAsync("user login to \'default\' site with \'default\' credential to the \'default\' browser", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

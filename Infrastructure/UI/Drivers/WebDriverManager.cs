@@ -13,15 +13,40 @@ public class WebDriverManager : IWebDriverManager
     public void InitDriver(string browser)
     {
         if (_driver != null) return;
-
+        
+        var isCI = Environment.GetEnvironmentVariable("CI") == "true";
+        
         _driver = browser.ToLower() switch
         {
-            "chrome" => new ChromeDriver(),
-            "safari" => new SafariDriver(),
-            _ => new ChromeDriver()
+            "chrome" => CreateChromeDriver(isCI),
+            "edge" => CreateEdgeDriver(isCI),
+            _ => CreateChromeDriver(isCI)
         };
-
         _driver.Manage().Window.Maximize();
+    }
+
+    public IWebDriver CreateChromeDriver(bool isCI)
+    {
+        var options = new ChromeOptions();
+        if (isCI)
+        {
+            options.AddArgument("--headless=new");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-dev-shm-usage");
+        }
+        return new ChromeDriver(options);
+    }
+
+    public IWebDriver CreateEdgeDriver(bool isCI)
+    {
+        var options = new EdgeOptions();
+        if (isCI)
+        {
+            options.AddArgument("--headless=new");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-dev-shm-usage");
+        }
+        return new EdgeDriver(options);
     }
 
     public IWebDriver GetDriver()

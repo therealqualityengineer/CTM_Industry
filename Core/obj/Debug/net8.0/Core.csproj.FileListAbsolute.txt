@@ -10,3 +10,4 @@
 /Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net8.0/refint/Core.dll
 /Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net8.0/Core.pdb
 /Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net8.0/ref/Core.dll
+/Users/arunramalingam/RiderProjects/CTM_Industry/Core/obj/Debug/net8.0/Core.sourcelink.json
