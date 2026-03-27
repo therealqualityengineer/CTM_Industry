@@ -1,7 +1,6 @@
 using Core.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+using Framework.Interfaces;
 using Reqnroll;
-using NUnit.Framework;
 
 namespace Tests.StepDefinitions;
 
@@ -10,16 +9,15 @@ public class LoginSteps
 {
     private readonly ILoginService _loginService;
 
-    public LoginSteps(ScenarioContext context)
+    public LoginSteps(ILoginService loginService)
     {
-        var provider = (IServiceProvider)context["Services"];
-        _loginService = provider.GetService<ILoginService>();
-        
+        _loginService = loginService;
     }
 
-    [Given("user login to {string} site with {string} credential to the {string} browser")]
-    public void GivenUserLoginToSiteWithCredentialToTheBrowser(string site, string user, string browser)
+    [Given("user login to the application with {string} credential")]
+    public void GivenUserLoginToTheApplicationWithCredential(string user)
     {
-        Assert.That(_loginService.Login(site, user, browser), Is.True);
+        var result = _loginService.IsLoginSuccessful(user);
+        Assert.That(result, Is.True);
     }
 }

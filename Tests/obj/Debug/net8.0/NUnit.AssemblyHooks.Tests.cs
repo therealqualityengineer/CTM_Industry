@@ -4,7 +4,7 @@ using System.CodeDom.Compiler;
 using System.Diagnostics;
 using global::System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-[GeneratedCode("Reqnroll", "3.3.3")]
+[GeneratedCode("Reqnroll", "3.3.4")]
 [global::NUnit.Framework.SetUpFixture]
 public static class Tests_NUnitAssemblyHooks
 {

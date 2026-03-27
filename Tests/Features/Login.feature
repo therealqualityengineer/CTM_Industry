@@ -1,4 +1,4 @@
 Feature: Login functionality
 
     Scenario: Valid login
-        Given user login to 'default' site with 'default' credential to the 'default' browser
+        Given user login to the application with 'default' credential
