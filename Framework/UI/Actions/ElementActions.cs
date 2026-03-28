@@ -68,6 +68,7 @@ public class ElementActions
         var element = _waitService.WaitForElementVisible(locator);
         element.Clear();
         element.SendKeys(text + Keys.Enter);
+        WaitForDomStability();
     }
 
     public string GetText(By locator)

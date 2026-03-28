@@ -42,6 +42,7 @@ public class DependencyInjection
         services.AddScoped<ICommonServices, CommonServices>();
         services.AddScoped<ITempManagerServices, TempManagerService>();
         services.AddScoped<IClientManagerServices, ClientManagerServices>();
+        services.AddScoped<IOrderManagerServices, OrderManagerServices>();
 
         // Pages
         services.AddScoped<TempManagerPage>();
@@ -49,7 +50,9 @@ public class DependencyInjection
         services.AddScoped<CommonPage>();
         services.AddScoped<BasePage>();
         services.AddScoped<ClientManagerPage>();
+        services.AddScoped<OrderManagerPage>();
         services.AddScoped<TestDataGenerator>();
+        services.AddScoped<ResolveDynamic>();
 
         // UI Helpers
         services.AddScoped<ElementActions>();

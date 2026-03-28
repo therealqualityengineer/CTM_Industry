@@ -20,7 +20,7 @@ public class BasePage
         _actions = actions;
         _driver = driverManager.Driver; 
     }
-
+    
     protected IDictionary<string, string> ToDictionary(Table table)
     {
         return table.Rows.ToDictionary(row => row[0], row => row[1]);

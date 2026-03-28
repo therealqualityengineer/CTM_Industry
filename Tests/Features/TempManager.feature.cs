@@ -146,47 +146,47 @@ namespace Tests.Features
 #line 8
         await testRunner.AndAsync("user navigate to \'index2.cfm?action=Temps.Search\' page", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "FirstName",
                             "<uniqueString>"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "LastName",
                             "<uniqueString>"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "Status",
                             "Active"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "HomeRegion",
                             "JasonTest"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "ContractEE",
                             "EE"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "Certification",
                             "RN"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "Specialty",
                             "ER"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "PrimaryEmail",
                             "<uniqueEmail>"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "Address",
                             "16801 Addison Road"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "City",
                             "Addison"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "State",
                             "TX"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "Zip",
                             "75001"});
 #line 9
-        await testRunner.AndAsync("user creates a temp with following details", ((string)(null)), table2, "And ");
+        await testRunner.AndAsync("user creates a temp with following details", ((string)(null)), table5, "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

@@ -38,22 +38,18 @@ public class TestDataGenerator
         {
             input = input.Replace("<uniqueString>", RandomWord(7));
         }
-
         if (input.Contains("<uniqueNumber>", StringComparison.OrdinalIgnoreCase))
         {
             input = input.Replace("<uniqueNumber>", RandomNumber(7));
         }
-
         if (input.Contains("<uniqueEmail>", StringComparison.OrdinalIgnoreCase))
         {
             input = input.Replace("<uniqueEmail>", RandomEmail());
         }
-
         if (input.Contains("<timestamp>", StringComparison.OrdinalIgnoreCase))
         {
             input = input.Replace("<timestamp>", Timestamp());
         }
-
         return input;
     }
 

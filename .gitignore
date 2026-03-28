@@ -1,38 +1,56 @@
-# Build folders
+# =========================
+# Build / Output
+# =========================
 bin/
 obj/
+out/
 
-# Rider / IntelliJ
+# Rider / VS / VSCode
+.vs/
 .idea/
-*.sln.iml
+.vscode/
 
-# User-specific files
+# User files
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
 
 # Logs
 *.log
 
-# Test results
+# Test Results
 TestResults/
 *.trx
 
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+
 # OS files
 .DS_Store
+Thumbs.db
 
-# NuGet
-*.nupkg
-packages/
+# Selenium / Driver logs
+chromedriver.log
+geckodriver.log
+msedgedriver.log
+
+# Screenshots (if generated)
+screenshots/
+*.png
 
 # Coverage
 coverage/
+*.coverage
 
-# ReSharper
-_ReSharper*
-*.DotSettings.user
+# Temporary files
+*.tmp
+*.temp
 
-# VS Code (if used)
-.vscode/
+# Reqnroll / SpecFlow generated
+*.feature.cs
 
-# Mac
-*.DS_Store
+# Environment files
+.env
