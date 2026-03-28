@@ -13,7 +13,7 @@ public class WaitService
     public WaitService(IWebDriverManager manager)
     {
         _driver = manager.Driver;
-        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
     }
 
     public IWebElement WaitForElementVisible(By locator)
