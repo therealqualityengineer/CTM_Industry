@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "stopAtFirstError": false
+  },
+  "execution": {
+    "parallelExecution": {
+      "enabled": true,
+      "testThreadCount": 3
+    }
+  }
+}

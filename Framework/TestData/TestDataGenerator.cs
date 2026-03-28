@@ -4,7 +4,8 @@ namespace Framework.TestData;
 
 public class TestDataGenerator
 {
-    private static readonly Random _random = new();
+    private static readonly ThreadLocal<Random> _random =
+        new(() => new Random());
 
     private const string Alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private const string Digits = "0123456789";
@@ -57,12 +58,9 @@ public class TestDataGenerator
     {
         var builder = new StringBuilder(length);
 
-        lock (_random)
+        for (int i = 0; i < length; i++)
         {
-            for (int i = 0; i < length; i++)
-            {
-                builder.Append(chars[_random.Next(chars.Length)]);
-            }
+            builder.Append(chars[_random.Value.Next(chars.Length)]);
         }
 
         return builder.ToString();
