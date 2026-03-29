@@ -7,4 +7,5 @@ public interface IConfig
     public string Username { get; }
     public string Password { get; }
     public string Browser  { get; }
+    public string APIBaseUrl { get; }
 }

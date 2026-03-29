@@ -7,4 +7,5 @@ public class TestSettings
     public string Username { get; set; } = null!;
     public string Password { get; set; } = null!;
     public string Browser { get; set; } = null!;
+    public string APIBaseUrl { get; set; } = null;
 }

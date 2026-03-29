@@ -1,5 +1,6 @@
 using Application.Services;
 using Core.Interfaces;
+using Framework.API;
 using Framework.Config;
 using Framework.Interfaces;
 using Framework.Services;
@@ -51,6 +52,8 @@ public class DependencyInjection
         services.AddScoped<BasePage>();
         services.AddScoped<ClientManagerPage>();
         services.AddScoped<OrderManagerPage>();
+        services.AddScoped<ApiClient>();
+        services.AddScoped<ApiService>();
         services.AddScoped<TestDataGenerator>();
         services.AddScoped<ResolveDynamic>();
 

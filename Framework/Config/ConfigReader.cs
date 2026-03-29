@@ -17,4 +17,5 @@ public class ConfigReader : IConfig
     public string Username => _settings.Username;
     public string Password => _settings.Password;
     public string Browser => _settings.Browser;
+    public string APIBaseUrl => _settings.APIBaseUrl;
 }
