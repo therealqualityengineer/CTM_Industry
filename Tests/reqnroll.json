@@ -7,5 +7,10 @@
       "enabled": true,
       "testThreadCount": 3
     }
-  }
+  },
+  "plugins": [
+    {
+      "name": "Allure.Reqnroll"
+    }
+  ]
 }
