@@ -1,5 +1,6 @@
 using System.Text;
 using Core.Interfaces;
+using Framework.Models.Enum;
 using RestSharp;
 
 namespace Framework.API;
@@ -13,20 +14,43 @@ public class ApiClient
         _client = new RestClient(config.APIBaseUrl);
     }
     
-    public RestResponse SendRequest(string endpoint, Method method, object? body = null, Dictionary<string, string>? headers = null, Dictionary<string, string>? query = null)
+    public RestResponse SendRequest(
+        Method method,
+        Dictionary<string, string> query,
+        Dictionary<string, string>? body = null,
+        BodyType bodyType = BodyType.Json)
     {
-        var request = new RestRequest(endpoint, method);
-        request.AddHeader("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes("qaengineer:qaengineer@99")));
-        
-        if (query != null)
-            foreach (var q in query)
-                request.AddQueryParameter(q.Key, q.Value);
-        
+        var request = new RestRequest("", method);
+
+        request.AddHeader("Authorization", GetAuthHeader());
+
+        foreach (var q in query)
+            request.AddQueryParameter(q.Key, q.Value);
+
         request.AddQueryParameter("resultType", "json");
-        
+
         if (body != null)
-            request.AddJsonBody(body);
+        {
+            switch (bodyType)
+            {
+                case BodyType.Multipart:
+                    foreach (var item in body)
+                        request.AddParameter(item.Key, item.Value);
+                    break;
+
+                case BodyType.Json:
+                    request.AddJsonBody(body);
+                    break;
+            }
+        }
 
         return _client.Execute(request);
+    }
+    
+    private string GetAuthHeader()
+    {
+        return "Basic " + Convert.ToBase64String(
+            Encoding.UTF8.GetBytes("qaengineer:qaengineer@99")
+        );
     }
 }

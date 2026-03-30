@@ -3,6 +3,7 @@ Feature: To Verify Temp Manager functionalities
     Background: 
         Given user login to the application with 'default' credential
  
+    @regression
     Scenario: Create a temp in UI
         And user navigate to the 'Temps' tab
         And user navigate to 'index2.cfm?action=Temps.Search' page
@@ -20,7 +21,8 @@ Feature: To Verify Temp Manager functionalities
           | City          | Addison            |
           | State         | TX                 |
           | Zip           | 75001              |
-          
+    
+    @smoke      
     Scenario: Verify newly created temp using getTemp CC method
         And user navigate to the 'Temps' tab
         And user navigate to 'index2.cfm?action=Temps.Search' page
@@ -38,8 +40,7 @@ Feature: To Verify Temp Manager functionalities
           | City          | Addison            |
           | State         | TX                 |
           | Zip           | 75001              |
-        Given user calls an API with
+        Given user sents 'getTemps' request
           | Field    | Value             |
-          | action   | getTemps          |
           | tempIdIn | <scenario_tempid> |
-          
+        
