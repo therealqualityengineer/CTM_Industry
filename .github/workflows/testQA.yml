@@ -1,11 +1,22 @@
 name: Run Tests
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      testType:
+        description: "Select test category"
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - smoke-sanity
+          - regression
+          - api
 
 jobs:
-  test:
+
+  run-tests:
     runs-on: ubuntu-latest
 
     env:
@@ -19,8 +30,23 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
+      - name: Install Chrome
+        run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
 
       - run: dotnet restore
       - run: dotnet build --no-restore
-      - run: dotnet test --no-build
+
+      - name: Run Selected Tests
+        run: |
+          if [ "${{ github.event.inputs.testType }}" = "smoke-sanity" ]; then
+            dotnet test --no-build --filter "Category=smoke|Category=sanity"
+
+          elif [ "${{ github.event.inputs.testType }}" = "regression" ]; then
+            dotnet test --no-build --filter "Category=regression"
+
+          elif [ "${{ github.event.inputs.testType }}" = "api" ]; then
+            dotnet test --no-build --filter "Category=api"
+
+          elif [ "${{ github.event.inputs.testType }}" = "all" ]; then
+            dotnet test --no-build
+          fi
