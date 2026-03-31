@@ -14,6 +14,9 @@ on:
           - regression
           - api
 
+  schedule:
+    - cron: '30 3 * * *'   # 🔥 Daily 9:00 AM IST
+
 permissions:
   contents: write
 
@@ -41,21 +44,31 @@ jobs:
       - run: dotnet restore
       - run: dotnet build --no-restore
 
+      # 🔥 Run tests (manual + scheduled safe handling)
       - name: Run Selected Tests
         run: |
-          if [ "${{ github.event.inputs.testType }}" = "smoke-sanity" ]; then
+          TYPE="${{ github.event.inputs.testType }}"
+
+          if [ -z "$TYPE" ]; then
+            TYPE="all"
+          fi
+
+          echo "Running tests: $TYPE"
+
+          if [ "$TYPE" = "smoke-sanity" ]; then
             dotnet test --no-build --filter "Category=smoke|Category=sanity"
 
-          elif [ "${{ github.event.inputs.testType }}" = "regression" ]; then
+          elif [ "$TYPE" = "regression" ]; then
             dotnet test --no-build --filter "Category=regression"
 
-          elif [ "${{ github.event.inputs.testType }}" = "api" ]; then
+          elif [ "$TYPE" = "api" ]; then
             dotnet test --no-build --filter "Category=api"
 
-          elif [ "${{ github.event.inputs.testType }}" = "all" ]; then
+          else
             dotnet test --no-build
           fi
 
+      # 🔥 Checkout previous gh-pages (for history)
       - name: Checkout gh-pages
         uses: actions/checkout@v4
         with:
@@ -63,6 +76,7 @@ jobs:
           path: gh-pages
         continue-on-error: true
 
+      # 🔥 Copy history
       - name: Copy Allure history
         run: |
           if [ -d "gh-pages/history" ]; then
@@ -70,21 +84,51 @@ jobs:
             cp -r gh-pages/history/* Tests/bin/Debug/net8.0/allure-results/history
           fi
 
+      # 🔥 Add environment info
       - name: Add Allure Environment Info
         run: |
           mkdir -p Tests/bin/Debug/net8.0/allure-results
           echo "Browser=${{ env.BROWSER }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
-          echo "TestType=${{ github.event.inputs.testType }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
+          echo "TestType=${{ github.event.inputs.testType || 'scheduled-all' }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
           echo "RunNumber=${{ github.run_number }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
           echo "Repository=${{ github.repository }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
 
+      # 🔥 Generate Allure report with history
       - name: Generate Allure Report
         run: |
           allure generate Tests/bin/Debug/net8.0/allure-results \
           -o allure-report --clean
 
+      # 🔥 Deploy to GitHub Pages
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-report
+
+      # 🔗 Print report URL
+      - name: Print Report URL
+        run: |
+          echo "🔗 Report URL:"
+          echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+
+      # 🔔 Slack Notification (always runs)
+      - name: Send Slack Notification
+        if: always()
+        run: |
+          STATUS="SUCCESS"
+          if [ "${{ job.status }}" != "success" ]; then
+            STATUS="FAILED"
+          fi
+
+          REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+
+          MESSAGE="🚀 *Test Run ${STATUS}*
+          🔹 Repo: ${{ github.repository }}
+          🔹 Run #: ${{ github.run_number }}
+          🔹 Type: ${{ github.event.inputs.testType || 'scheduled-all' }}
+          🔗 Report: ${REPORT_URL}"
+
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"$MESSAGE\"}" \
+          ${{ secrets.SLACK_WEBHOOK }}
