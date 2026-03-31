@@ -1,2 +1,4 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","23970","Create a shift by clearconnect","","2026-03-31","passed","2026-03-31","","","",""
+"","7548","Create a client in UI","","2026-03-31","passed","2026-03-31","","","",""
+"","14368","Verify newly created temp using getTemp CC method","","2026-03-31","passed","2026-03-31","","","",""
+"","3473","Valid login","","2026-03-31","passed","2026-03-31","","","",""
