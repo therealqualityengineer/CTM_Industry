@@ -13,11 +13,11 @@ on:
           - smoke-sanity
           - regression
           - api
-permissions:
-  contents: write 
-  
-jobs:
 
+permissions:
+  contents: write
+
+jobs:
   run-tests:
     runs-on: ubuntu-latest
 
@@ -55,6 +55,28 @@ jobs:
           elif [ "${{ github.event.inputs.testType }}" = "all" ]; then
             dotnet test --no-build
           fi
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+        continue-on-error: true
+
+      - name: Copy Allure history
+        run: |
+          if [ -d "gh-pages/history" ]; then
+            mkdir -p Tests/bin/Debug/net8.0/allure-results/history
+            cp -r gh-pages/history/* Tests/bin/Debug/net8.0/allure-results/history
+          fi
+
+      - name: Add Allure Environment Info
+        run: |
+          mkdir -p Tests/bin/Debug/net8.0/allure-results
+          echo "Browser=${{ env.BROWSER }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
+          echo "TestType=${{ github.event.inputs.testType }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
+          echo "RunNumber=${{ github.run_number }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
+          echo "Repository=${{ github.repository }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
 
       - name: Generate Allure Report
         run: |
