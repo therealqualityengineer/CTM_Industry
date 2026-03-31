@@ -42,7 +42,7 @@ Feature: To Verify Order Manager functionalities
           | Certification | RN                       |
           | Specialty     | ER                       |
           
-  @regression
+  @api
   Scenario: Create a shift by clearconnect
     And user navigate to the 'Temps' tab
     And user creates a temp with following details 
