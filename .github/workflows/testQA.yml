@@ -13,7 +13,9 @@ on:
           - smoke-sanity
           - regression
           - api
-
+permissions:
+  contents: write 
+  
 jobs:
 
   run-tests:
