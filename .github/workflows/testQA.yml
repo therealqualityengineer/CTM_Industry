@@ -73,16 +73,16 @@ jobs:
           echo "Running tests: $TYPE"
 
           if [ "$TYPE" = "smoke-sanity" ]; then
-            dotnet test --no-build --filter "Category=smoke|Category=sanity"
+            dotnet test --filter "(Category=smoke|Category=sanity)&Category!=wip"
 
           elif [ "$TYPE" = "regression" ]; then
-            dotnet test --no-build --filter "Category=regression"
+            dotnet test --no-build --filter "Category=regression&Category!=wip"
 
           elif [ "$TYPE" = "api" ]; then
-            dotnet test --no-build --filter "Category=api"
+            dotnet test --no-build --filter "Category=api&Category!=wip"
 
           else
-            dotnet test --no-build
+            dotnet test --no-build --filter "Category!=wip"
           fi
         env:
           USE_GRID: true
