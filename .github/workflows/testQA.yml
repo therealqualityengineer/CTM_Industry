@@ -15,7 +15,7 @@ on:
           - api
 
   schedule:
-    - cron: '30 3 * * *'   # 🔥 Daily 9:00 AM IST
+    - cron: '30 3 * * *'   # Daily 9:00 AM IST
 
 permissions:
   contents: write
@@ -59,14 +59,13 @@ jobs:
             -e SE_NODE_MAX_SESSIONS=3 \
             selenium/node-chrome:4.21.0
 
-          echo "Waiting for Grid to be ready..."
+          echo "Waiting for Grid..."
           sleep 20
 
-      # 🔍 Optional debug (can remove later)
       - name: Check Grid Status
         run: curl http://localhost:4444/status
 
-      # 🔥 Run tests (Matrix-based)
+      # 🔥 Run Tests
       - name: Run Selected Tests
         run: |
           TYPE="${{ matrix.testType }}"
@@ -90,39 +89,50 @@ jobs:
           CI: true
           BROWSER: chrome
 
-      # 🔥 Checkout previous gh-pages (for history)
-      - name: Checkout gh-pages
-        uses: actions/checkout@v4
+      # 🔥 Upload Allure Results
+      - name: Upload Allure Results
+        uses: actions/upload-artifact@v4
         with:
-          ref: gh-pages
-          path: gh-pages
-        continue-on-error: true
+          name: allure-results-${{ matrix.testType }}
+          path: Tests/bin/Debug/net8.0/allure-results
 
-      # 🔥 Copy history
-      - name: Copy Allure history
+  # 🔥 MERGE + REPORT JOB
+  merge-report:
+    needs: run-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline --save-dev
+
+      # 🔽 Download all artifacts
+      - name: Download Allure Results
+        uses: actions/download-artifact@v4
+        with:
+          path: allure-results
+
+      # 🔽 Merge results
+      - name: Merge Results
         run: |
-          if [ -d "gh-pages/history" ]; then
-            mkdir -p Tests/bin/Debug/net8.0/allure-results/history
-            cp -r gh-pages/history/* Tests/bin/Debug/net8.0/allure-results/history
-          fi
+          mkdir merged-results
+          cp -r allure-results/*/* merged-results || true
 
-      # 🔥 Add environment info
+      # 🔥 Add environment info (optional but useful)
       - name: Add Allure Environment Info
         run: |
-          mkdir -p Tests/bin/Debug/net8.0/allure-results
-          echo "Browser=${{ env.BROWSER }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
-          echo "TestType=${{ matrix.testType }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
-          echo "RunNumber=${{ github.run_number }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
-          echo "Repository=${{ github.repository }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
+          mkdir -p merged-results
+          echo "RunNumber=${{ github.run_number }}" >> merged-results/environment.properties
+          echo "Repository=${{ github.repository }}" >> merged-results/environment.properties
 
-      # 🔥 Generate Allure report
+      # 🔥 Generate report
       - name: Generate Allure Report
         run: |
-          allure generate Tests/bin/Debug/net8.0/allure-results \
-          -o allure-report --clean
+          allure generate merged-results -o allure-report --clean
 
       # 🔥 Deploy to GitHub Pages
-      - name: Deploy Allure Report to GitHub Pages
+      - name: Deploy Allure Report
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -148,7 +158,6 @@ jobs:
           MESSAGE="🚀 *Test Run ${STATUS}*
           🔹 Repo: ${{ github.repository }}
           🔹 Run #: ${{ github.run_number }}
-          🔹 Type: ${{ matrix.testType }}
           🔗 Report: ${REPORT_URL}"
 
           curl -X POST -H 'Content-type: application/json' \
