@@ -24,6 +24,10 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        testType: [smoke-sanity, regression, api]
+
     env:
       CI: true
       BROWSER: chrome
@@ -44,14 +48,28 @@ jobs:
       - run: dotnet restore
       - run: dotnet build --no-restore
 
-      # 🔥 Run tests (manual + scheduled safe handling)
+      # 🔥 Start Selenium Grid
+      - name: Start Selenium Grid
+        run: |
+          docker run -d -p 4444:4444 --name selenium-hub selenium/hub:4.21.0
+          docker run -d --link selenium-hub \
+            -e SE_EVENT_BUS_HOST=selenium-hub \
+            -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+            -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+            -e SE_NODE_MAX_SESSIONS=3 \
+            selenium/node-chrome:4.21.0
+
+          echo "Waiting for Grid to be ready..."
+          sleep 20
+
+      # 🔍 Optional debug (can remove later)
+      - name: Check Grid Status
+        run: curl http://localhost:4444/status
+
+      # 🔥 Run tests (Matrix-based)
       - name: Run Selected Tests
         run: |
-          TYPE="${{ github.event.inputs.testType }}"
-
-          if [ -z "$TYPE" ]; then
-            TYPE="all"
-          fi
+          TYPE="${{ matrix.testType }}"
 
           echo "Running tests: $TYPE"
 
@@ -67,6 +85,10 @@ jobs:
           else
             dotnet test --no-build
           fi
+        env:
+          USE_GRID: true
+          CI: true
+          BROWSER: chrome
 
       # 🔥 Checkout previous gh-pages (for history)
       - name: Checkout gh-pages
@@ -89,11 +111,11 @@ jobs:
         run: |
           mkdir -p Tests/bin/Debug/net8.0/allure-results
           echo "Browser=${{ env.BROWSER }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
-          echo "TestType=${{ github.event.inputs.testType || 'scheduled-all' }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
+          echo "TestType=${{ matrix.testType }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
           echo "RunNumber=${{ github.run_number }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
           echo "Repository=${{ github.repository }}" >> Tests/bin/Debug/net8.0/allure-results/environment.properties
 
-      # 🔥 Generate Allure report with history
+      # 🔥 Generate Allure report
       - name: Generate Allure Report
         run: |
           allure generate Tests/bin/Debug/net8.0/allure-results \
@@ -112,7 +134,7 @@ jobs:
           echo "🔗 Report URL:"
           echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
 
-      # 🔔 Slack Notification (always runs)
+      # 🔔 Slack Notification
       - name: Send Slack Notification
         if: always()
         run: |
@@ -126,7 +148,7 @@ jobs:
           MESSAGE="🚀 *Test Run ${STATUS}*
           🔹 Repo: ${{ github.repository }}
           🔹 Run #: ${{ github.run_number }}
-          🔹 Type: ${{ github.event.inputs.testType || 'scheduled-all' }}
+          🔹 Type: ${{ matrix.testType }}
           🔗 Report: ${REPORT_URL}"
 
           curl -X POST -H 'Content-type: application/json' \
