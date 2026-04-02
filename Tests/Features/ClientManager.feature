@@ -1,7 +1,7 @@
 Feature: To Verify Client Manager functionalities
 
     Background: 
-        Given user login to the application with 'default' credential
+        Given user login to the application with 'testuser_01' credential
      
     @smoke    
     Scenario: Create a client in UI

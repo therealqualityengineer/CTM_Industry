@@ -1,10 +1,8 @@
 Feature: To Verify Order Manager functionalities
 
-    Background: 
-      Given user login to the application with 'default' credential
- 
-    @NonParallel
+    @regression
     Scenario: Create a shift in UI
+        Given user login to the application with 'testuser_02' credential
         And user navigate to the 'Temps' tab
         And user creates a temp with following details 
           | Field         | Value              |
@@ -44,6 +42,7 @@ Feature: To Verify Order Manager functionalities
           
   @api
   Scenario: Create a shift by clearconnect
+    Given user login to the application with 'default' credential
     And user navigate to the 'Temps' tab
     And user creates a temp with following details 
       | Field         | Value              |

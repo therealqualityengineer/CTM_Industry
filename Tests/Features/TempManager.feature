@@ -1,10 +1,8 @@
 Feature: To Verify Temp Manager functionalities
 
-    Background: 
-        Given user login to the application with 'default' credential
- 
-    @regression
+    @smoke
     Scenario: Create a temp in UI
+        Given user login to the application with 'testuser_04' credential
         And user navigate to the 'Temps' tab
         And user navigate to 'index2.cfm?action=Temps.Search' page
         And user creates a temp with following details 
@@ -22,8 +20,9 @@ Feature: To Verify Temp Manager functionalities
           | State         | TX                 |
           | Zip           | 75001              |
     
-    @smoke      
+    @regression      
     Scenario: Verify newly created temp using getTemp CC method
+        Given user login to the application with 'testuser_05' credential
         And user navigate to the 'Temps' tab
         And user navigate to 'index2.cfm?action=Temps.Search' page
         And user creates a temp with following details 

@@ -6,7 +6,7 @@ using Framework.Interfaces;
 using Framework.Services;
 using Framework.TestData;
 using Framework.UI.Actions;
-using Framework.UI.Drivers;
+using Framework.UI.Driver;
 using Framework.UI.Pages;
 using Infrastructure.UI.Pages;
 using Infrastructure.UI.Waits;

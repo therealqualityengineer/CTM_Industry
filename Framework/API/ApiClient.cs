@@ -50,7 +50,7 @@ public class ApiClient
     private string GetAuthHeader()
     {
         return "Basic " + Convert.ToBase64String(
-            Encoding.UTF8.GetBytes("qaengineer:qaengineer@99")
+            Encoding.UTF8.GetBytes("qaengineer:Therealqaengineer@99")
         );
     }
 }
