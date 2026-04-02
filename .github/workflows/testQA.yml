@@ -96,7 +96,6 @@ jobs:
           name: allure-results-${{ matrix.testType }}
           path: Tests/bin/Debug/net8.0/allure-results
 
-  # 🔥 MERGE + REPORT JOB
   merge-report:
     needs: run-tests
     runs-on: ubuntu-latest
@@ -119,26 +118,42 @@ jobs:
           mkdir merged-results
           cp -r allure-results/*/* merged-results || true
 
-      # 🔥 Add environment info (optional but useful)
+      # 🔥 NEW: Checkout previous report (history source)
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+        continue-on-error: true
+
+      # 🔥 NEW: Copy history into current run
+      - name: Copy Allure History
+        run: |
+          if [ -d "gh-pages/history" ]; then
+            mkdir -p merged-results/history
+            cp -r gh-pages/history/* merged-results/history
+          fi
+
+      # 🔥 Add environment info
       - name: Add Allure Environment Info
         run: |
           mkdir -p merged-results
           echo "RunNumber=${{ github.run_number }}" >> merged-results/environment.properties
           echo "Repository=${{ github.repository }}" >> merged-results/environment.properties
 
-      # 🔥 Generate report
+      # 🔥 Generate report (with history)
       - name: Generate Allure Report
         run: |
           allure generate merged-results -o allure-report --clean
 
-      # 🔥 Deploy to GitHub Pages
+      # 🔥 Deploy
       - name: Deploy Allure Report
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-report
 
-      # 🔗 Print report URL
+      # 🔗 Print URL
       - name: Print Report URL
         run: |
           echo "🔗 Report URL:"
