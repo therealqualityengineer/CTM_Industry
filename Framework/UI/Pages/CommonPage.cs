@@ -1,4 +1,5 @@
 using Core.Interfaces;
+using Framework.Constant;
 using Framework.UI.Actions;
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
@@ -14,6 +15,7 @@ public class CommonPage
     private readonly By _doSearchButton = By.Id("doSearch");
     private readonly By _clientSearchSeletor = By.Id("ClientEqualsOrContains_context");
     private readonly By _clientSearchText = By.Id("ClientEqualsOrContains_contains");
+    public By _subnavtext(string text) => By.XPath($"//a[text()='{text}']");
     
     public CommonPage(ElementActions elementActions,  IConfig config)
     {
@@ -42,5 +44,22 @@ public class CommonPage
         _actions.SelectDropdown(_clientSearchSeletor, "Contains");
         _actions.Type(_clientSearchText,clientName);
         _actions.Click(_doSearchButton);
+    }
+
+    public bool IsTextsDisplyed(string expectedText)
+    {
+        return _actions.IsElementDisplayed(_subnavtext(expectedText));
+    }
+    
+    public void NavigateTo(string profileName, string id)
+    {
+        if(profileName.Equals("temp", StringComparison.OrdinalIgnoreCase))
+        {
+            _actions.Driver.Navigate().GoToUrl(_config.BaseUrl+PageUrls.TempProfileUrl+id);
+        }
+        else if (profileName.Equals("client", StringComparison.OrdinalIgnoreCase))
+        {
+            _actions.Driver.Navigate().GoToUrl(_config.BaseUrl+PageUrls.ClientProfileUrl+id);
+        }
     }
 }

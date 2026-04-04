@@ -42,7 +42,7 @@ Feature: To Verify Order Manager functionalities
           
   @api
   Scenario: Create a shift by clearconnect
-    Given user login to the application with 'default' credential
+    Given user login to the application with 'testuser_03' credential
     And user navigate to the 'Temps' tab
     And user creates a temp with following details 
       | Field         | Value              |
@@ -85,5 +85,5 @@ Feature: To Verify Order Manager functionalities
       | orderType      | 1                   |
     Then the user verifies the api response which 'success' is '1'
     Then the user verifies the api response which 'orderid' is 'not null'
-    Then the user verifies the api response which 'message' is 'New ord345er record inserted successfully.'
+    Then the user verifies the api response which 'message' is 'New order record inserted successfully.'
     

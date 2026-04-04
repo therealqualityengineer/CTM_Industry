@@ -20,6 +20,7 @@ public class ApiService
             "deleteTemp" => Method.Delete,
             "insertTemp" => Method.Post,
             "insertOrder" => Method.Post,
+            "getClients" => Method.Get,
             _ => throw new NotSupportedException($"Unknown action: {action}")
         };
     }

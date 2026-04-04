@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using Core.Interfaces;
 using Framework.Interfaces;
 using Framework.UI.Pages;
 using Infrastructure.UI.Pages;
+using NUnit.Framework;
 
 namespace Framework.Services;
 
@@ -22,5 +24,27 @@ public class CommonServices : ICommonServices
     public void NavigateToPage(string pageName)
     {
         _commonPage.NavigateToPage(pageName); 
+    }
+
+    public void VerifyTextDisplayed(List<string?> expectedTextList)
+    {
+        var failedTextList = new List<string>();
+
+        foreach (var expectedText in expectedTextList)
+        {
+            if (expectedText != null && !_commonPage.IsTextsDisplyed(expectedText))
+            {
+                failedTextList.Add(expectedText);
+            }
+        }
+        if (failedTextList.Any())
+        {
+            Assert.Fail($"These texts were NOT displayed: {string.Join(", ", failedTextList)}");
+        }
+    }
+    
+    public void NavigateToProfilePage(string profileName, string id)
+    {
+        _commonPage.NavigateTo(profileName, id);
     }
 }
