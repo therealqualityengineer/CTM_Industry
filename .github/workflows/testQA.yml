@@ -70,35 +70,24 @@ jobs:
       - name: Run Selected Tests
         run: |
           TYPE="${{ matrix.testType }}"
-
           mkdir -p TestResults
 
           echo "Running tests: $TYPE"
 
           if [ "$TYPE" = "smoke-sanity" ]; then
-            dotnet test --no-build \
-              --logger "trx;LogFileName=results.trx" \
-              --results-directory TestResults \
-              --filter "(Category=smoke|Category=sanity)&Category!=wip"
-
+            FILTER="(Category=smoke|Category=sanity)&Category!=wip"
           elif [ "$TYPE" = "regression" ]; then
-            dotnet test --no-build \
-              --logger "trx;LogFileName=results.trx" \
-              --results-directory TestResults \
-              --filter "Category=regression&Category!=wip"
-
+            FILTER="Category=regression&Category!=wip"
           elif [ "$TYPE" = "api" ]; then
-            dotnet test --no-build \
-              --logger "trx;LogFileName=results.trx" \
-              --results-directory TestResults \
-              --filter "Category=api&Category!=wip"
-
+            FILTER="Category=api&Category!=wip"
           else
-            dotnet test --no-build \
-              --logger "trx;LogFileName=results.trx" \
-              --results-directory TestResults \
-              --filter "Category!=wip"
+            FILTER="Category!=wip"
           fi
+
+          dotnet test --no-build \
+            --logger "trx;LogFileName=results.trx" \
+            --results-directory TestResults \
+            --filter "$FILTER"
         env:
           USE_GRID: true
           CI: true
@@ -154,16 +143,19 @@ jobs:
       - name: Install Allure CLI
         run: npm install -g allure-commandline --save-dev
 
+      # 🔽 Download all artifacts
       - name: Download Allure Results
         uses: actions/download-artifact@v4
         with:
           path: allure-results
 
+      # 🔽 Merge results
       - name: Merge Results
         run: |
           mkdir merged-results
           cp -r allure-results/*/* merged-results || true
 
+      # 🔥 History
       - name: Checkout gh-pages
         uses: actions/checkout@v4
         with:
@@ -178,22 +170,47 @@ jobs:
             cp -r gh-pages/history/* merged-results/history
           fi
 
+      # 🔥 Environment info
       - name: Add Allure Environment Info
         run: |
           mkdir -p merged-results
           echo "RunNumber=${{ github.run_number }}" >> merged-results/environment.properties
           echo "Repository=${{ github.repository }}" >> merged-results/environment.properties
 
+      # 🔥 Generate report
       - name: Generate Allure Report
         run: |
           allure generate merged-results -o allure-report --clean
 
+      # 🔥 Deploy
       - name: Deploy Allure Report
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-report
 
+      # 🔗 Print URL
       - name: Print Report URL
         run: |
+          echo "🔗 Report URL:"
           echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+
+      # 🔔 Slack Notification (FINAL STATUS)
+      - name: Send Slack Notification
+        if: always()
+        run: |
+          STATUS="SUCCESS"
+          if [ "${{ needs.run-tests.result }}" != "success" ]; then
+            STATUS="FAILED"
+          fi
+
+          REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+
+          MESSAGE="🚀 *Test Run ${STATUS}*
+          🔹 Repo: ${{ github.repository }}
+          🔹 Run #: ${{ github.run_number }}
+          🔗 Report: ${REPORT_URL}"
+
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"$MESSAGE\"}" \
+          ${{ secrets.SLACK_WEBHOOK }}
