@@ -118,6 +118,7 @@ public class ElementActions
     public void CustomSelect(By inputLocator, string text, By optionLocator)
     {
         Type(inputLocator, text);
+        WaitForDomStability();
         Click(optionLocator);
     }
 
