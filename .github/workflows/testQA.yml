@@ -15,7 +15,7 @@ on:
           - api
 
   schedule:
-    - cron: '30 3 * * *'   # Daily 9:00 AM IST
+    - cron: '30 3 * * *'
 
 permissions:
   contents: write
@@ -66,25 +66,70 @@ jobs:
       - name: Check Grid Status
         run: curl http://localhost:4444/status
 
-      # 🔥 Run Tests
+      # 🔥 Run Tests (with TRX)
       - name: Run Selected Tests
         run: |
           TYPE="${{ matrix.testType }}"
 
+          mkdir -p TestResults
+
           echo "Running tests: $TYPE"
 
           if [ "$TYPE" = "smoke-sanity" ]; then
-            dotnet test --filter "(Category=smoke|Category=sanity)&Category!=wip"
+            dotnet test --no-build \
+              --logger "trx;LogFileName=results.trx" \
+              --results-directory TestResults \
+              --filter "(Category=smoke|Category=sanity)&Category!=wip"
 
           elif [ "$TYPE" = "regression" ]; then
-            dotnet test --no-build --filter "Category=regression&Category!=wip"
+            dotnet test --no-build \
+              --logger "trx;LogFileName=results.trx" \
+              --results-directory TestResults \
+              --filter "Category=regression&Category!=wip"
 
           elif [ "$TYPE" = "api" ]; then
-            dotnet test --no-build --filter "Category=api&Category!=wip"
+            dotnet test --no-build \
+              --logger "trx;LogFileName=results.trx" \
+              --results-directory TestResults \
+              --filter "Category=api&Category!=wip"
 
           else
-            dotnet test --no-build --filter "Category!=wip"
+            dotnet test --no-build \
+              --logger "trx;LogFileName=results.trx" \
+              --results-directory TestResults \
+              --filter "Category!=wip"
           fi
+        env:
+          USE_GRID: true
+          CI: true
+          BROWSER: chrome
+
+      # 🔥 Extract Failed Tests
+      - name: Extract Failed Tests
+        if: failure()
+        run: |
+          echo "Extracting failed tests..."
+
+          FAILED_TESTS=$(grep -oP '(?<=testName=").*?(?=")' TestResults/results.trx | tr '\n' '|')
+
+          echo "FAILED_TESTS=$FAILED_TESTS" >> $GITHUB_ENV
+
+          echo "Failed tests:"
+          echo "$FAILED_TESTS"
+
+      # 🔁 Re-run ONLY failed tests
+      - name: Re-run Failed Tests
+        if: failure()
+        run: |
+          if [ -z "$FAILED_TESTS" ]; then
+            echo "No failed tests found"
+            exit 0
+          fi
+
+          echo "Re-running: $FAILED_TESTS"
+
+          dotnet test --no-build \
+            --filter "FullyQualifiedName~$FAILED_TESTS"
         env:
           USE_GRID: true
           CI: true
@@ -109,19 +154,16 @@ jobs:
       - name: Install Allure CLI
         run: npm install -g allure-commandline --save-dev
 
-      # 🔽 Download all artifacts
       - name: Download Allure Results
         uses: actions/download-artifact@v4
         with:
           path: allure-results
 
-      # 🔽 Merge results
       - name: Merge Results
         run: |
           mkdir merged-results
           cp -r allure-results/*/* merged-results || true
 
-      # 🔥 NEW: Checkout previous report (history source)
       - name: Checkout gh-pages
         uses: actions/checkout@v4
         with:
@@ -129,7 +171,6 @@ jobs:
           path: gh-pages
         continue-on-error: true
 
-      # 🔥 NEW: Copy history into current run
       - name: Copy Allure History
         run: |
           if [ -d "gh-pages/history" ]; then
@@ -137,47 +178,22 @@ jobs:
             cp -r gh-pages/history/* merged-results/history
           fi
 
-      # 🔥 Add environment info
       - name: Add Allure Environment Info
         run: |
           mkdir -p merged-results
           echo "RunNumber=${{ github.run_number }}" >> merged-results/environment.properties
           echo "Repository=${{ github.repository }}" >> merged-results/environment.properties
 
-      # 🔥 Generate report (with history)
       - name: Generate Allure Report
         run: |
           allure generate merged-results -o allure-report --clean
 
-      # 🔥 Deploy
       - name: Deploy Allure Report
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-report
 
-      # 🔗 Print URL
       - name: Print Report URL
         run: |
-          echo "🔗 Report URL:"
           echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-
-      # 🔔 Slack Notification
-      - name: Send Slack Notification
-        if: always()
-        run: |
-          STATUS="SUCCESS"
-          if [ "${{ job.status }}" != "success" ]; then
-            STATUS="FAILED"
-          fi
-
-          REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-
-          MESSAGE="🚀 *Test Run ${STATUS}*
-          🔹 Repo: ${{ github.repository }}
-          🔹 Run #: ${{ github.run_number }}
-          🔗 Report: ${REPORT_URL}"
-
-          curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"$MESSAGE\"}" \
-          ${{ secrets.SLACK_WEBHOOK }}
