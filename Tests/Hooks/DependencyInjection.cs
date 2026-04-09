@@ -63,6 +63,7 @@ public class DependencyInjection
 
         // Context
         services.AddScoped<ScenarioData>();
+        services.AddScoped<DynamicDataGenerator>();
 
         return services;
     }

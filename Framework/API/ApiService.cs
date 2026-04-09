@@ -18,8 +18,10 @@ public class ApiService
         {
             "getTemps" => Method.Get,
             "deleteTemp" => Method.Delete,
-            "insertTemp" => Method.Post,
+            "insertTempRecords" => Method.Post,
+            "insertClients"  => Method.Post,
             "insertOrder" => Method.Post,
+            "insertLTorder" => Method.Post,
             "getClients" => Method.Get,
             _ => throw new NotSupportedException($"Unknown action: {action}")
         };
@@ -29,8 +31,10 @@ public class ApiService
     {
         return action switch
         {
-            "insertTemp" => BodyType.Multipart,
+            "insertTempRecords" => BodyType.Multipart,
+            "insertClients"  => BodyType.Multipart,
             "insertOrder" => BodyType.Multipart,
+            "insertLTorder" => BodyType.Multipart,
             _ => BodyType.Json
         };
     }
@@ -54,9 +58,68 @@ public class ApiService
         }
         else if (method == Method.Post)
         {
-            body = data;
+            if (action == "insertTempRecords" || action == "insertClients")
+            {
+                string xml = action switch
+                {
+                    "insertTempRecords" => BuildTempXml(data),
+                    "insertClients" => BuildClientXml(data),
+                    _ => throw new NotSupportedException($"Unknown action: {action}")
+                };
+                
+                string param = action switch
+                {
+                    "insertTempRecords" => "tempRecords",
+                    "insertClients" => "clientRecords",
+                    _ => throw new NotSupportedException($"Unknown action: {action}")
+                };
+                
+                body = new Dictionary<string, string>
+                {
+                    { param, xml },
+                    { "resultType", "json" }
+                };
+            }
+            else
+            {
+                body = data;
+            }
         }
-
         return _apiClient.SendRequest(method, query, body, bodyType);
+    }
+    
+    public string BuildTempXml(Dictionary<string, string> data)
+    {
+        return $@"
+            <tempRecords>
+                <tempRecord>
+                    <firstName>{data["firstName"]}</firstName>
+                    <lastName>{data["lastName"]}</lastName>
+                    <Address>{data["Address"]}</Address>
+                    <city>{data["City"]}</city>
+                    <state>{data["State"]}</state>
+                    <zip>{data["Zip"]}</zip>
+                    <status>{data["status"]}</status>
+                    <homeRegion>{data["homeregion"]}</homeRegion>
+                    <certification>{data["certification"]}</certification>
+                    <specialty>{data["specialty"]}</specialty>
+                </tempRecord>
+            </tempRecords>";
+    }
+    
+    public string BuildClientXml(Dictionary<string, string> data)
+    {
+        return $@"
+            <clientRecords>
+                <record>
+                    <clientName>{data["clientName"]}</clientName>
+                    <Address>{data["Address"]}</Address>
+                    <city>{data["City"]}</city>
+                    <state>{data["State"]}</state>
+                    <zip>{data["Zip"]}</zip>
+                    <status>{data["status"]}</status>
+                    <regionId>{data["regionId"]}</regionId>
+                </record>
+            </clientRecords>";
     }
 }

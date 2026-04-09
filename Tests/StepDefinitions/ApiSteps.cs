@@ -12,12 +12,14 @@ public class ApiSteps
     private readonly ApiService _apiService;
     private readonly ResolveDynamic _resolveDynamic;
     private readonly ScenarioData _scenarioData;
+    private readonly DynamicDataGenerator _dynamicDataGenerator;
     
-    public ApiSteps(ApiService apiService, ResolveDynamic resolveDynamic, ScenarioData scenarioData)
+    public ApiSteps(ApiService apiService, ResolveDynamic resolveDynamic, ScenarioData scenarioData, DynamicDataGenerator dynamicDataGenerator)
     {
         _apiService = apiService;
         _resolveDynamic = resolveDynamic;
         _scenarioData = scenarioData;
+        _dynamicDataGenerator = dynamicDataGenerator;
     }
 
     [Given("user sents {string} request")]
@@ -25,8 +27,9 @@ public class ApiSteps
     {
         var data = table.Rows.ToDictionary(
             row => row["Field"],
-            row => _resolveDynamic.ResolveDynamicValues(row["Value"])
+            row => _resolveDynamic.ResolveDynamicValues(_dynamicDataGenerator.Resolve(row["Value"]))
         );
+        
         var response = _apiService.Execute(action, data);
         _scenarioData.Response = response;
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -66,9 +69,10 @@ public class ApiSteps
         {
             { "orderId", ScenarioKeys.OrderId },
             { "tempId", ScenarioKeys.TempId },
-            { "clientId", ScenarioKeys.ClientId }
+            { "clientId", ScenarioKeys.ClientId },
+            { "ltorderId", ScenarioKeys.LTorderId }
         };
-
+        
         if (map.TryGetValue(key, out var scenarioKey))
         {
             _scenarioData.Set(scenarioKey, value);
