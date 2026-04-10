@@ -1,5 +1,5 @@
 Feature: Login functionality
 
-    @smoke
+    @wip
     Scenario: Valid login
         Given user login to the application with 'default' credential

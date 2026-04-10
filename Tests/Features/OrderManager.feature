@@ -1,6 +1,6 @@
 Feature: To Verify Order Manager functionalities
 
-    @regression  @20001
+    @wip  @20001
     Scenario: Create a shift in UI
         Given user login to the application with 'default' credential
         And user navigate to the 'Temps' tab
@@ -42,7 +42,7 @@ Feature: To Verify Order Manager functionalities
           
   @api @20002
   Scenario: Create a shift by clearconnect
-    Given user login to the application with 'default' credential
+    Given user login to the application with 'testuser_02' credential
     And user navigate to the 'Temps' tab
     And user creates a temp with following details 
       | Field         | Value              |

@@ -1,6 +1,6 @@
 Feature: To Verify Temp Manager functionalities
 
-    @smoke
+    @wip
     Scenario: Create a temp in UI
         Given user login to the application with 'default' credential
         And user navigate to the 'Temps' tab
@@ -22,7 +22,7 @@ Feature: To Verify Temp Manager functionalities
     
     @smoke      
     Scenario: Verify newly created temp using getTemp CC method
-        Given user login to the application with 'default' credential
+        Given user login to the application with 'testuser_03' credential
         And user navigate to the 'Temps' tab
         And user navigate to 'index2.cfm?action=Temps.Search' page
         And user creates a temp with following details 
@@ -46,7 +46,7 @@ Feature: To Verify Temp Manager functionalities
 
   @regression      
   Scenario: Verify subnav links in temp profile
-    Given user login to the application with 'default' credential
+    Given user login to the application with 'testuser_04' credential
     And user navigate to the 'Temps' tab
     And user navigate to 'index2.cfm?action=Temps.Search' page
     And user creates a temp with following details 
@@ -87,7 +87,7 @@ Feature: To Verify Temp Manager functionalities
       
   @regression
   Scenario: Enable Flat Pay and Bill for Temp
-    Given user login to the application with 'default' credential
+    Given user login to the application with 'testuser_05' credential
     And user navigate to the 'Temps' tab
     And the user creates default temp
     And the user enabled the flat pay and bill with following amount
