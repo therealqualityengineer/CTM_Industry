@@ -1,6 +1,6 @@
 Feature: To Verify Client Manager functionalities
 
-    @wip    
+    @smoke    
     Scenario: Create a client in UI
         Given user login to the application with 'default' credential
         And user navigate to the 'Clients' tab
@@ -17,7 +17,7 @@ Feature: To Verify Client Manager functionalities
     
     @smoke
     Scenario: Verify subnav links in client profile
-        Given user login to the application with 'testuser_01' credential
+        Given user login to the application with 'default' credential
         And user navigate to the 'Clients' tab
         And user creates a client with following details 
           | Field        | Value              |

@@ -1,6 +1,6 @@
 Feature: To Verify LongTerm Order Manager functionalities
     
-    @regression @20003
+    @api @20003
     Scenario: Create a Assignment by clearconnect
         Given user sents 'insertTempRecords' request
           | Field         | Value              |
