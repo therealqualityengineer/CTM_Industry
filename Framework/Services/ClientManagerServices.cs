@@ -30,7 +30,7 @@ public class ClientManagerServices : IClientManagerServices
             City =  input["City"],
             State =  input["State"],
             Zip =  input["Zip"],
-            //QuickbooksId =  input["QuickbooksId"],
+            QuickbooksId =  input["QuickbooksId"],
         };
         
         _clientManagerPage.ClickNew();
@@ -41,7 +41,7 @@ public class ClientManagerServices : IClientManagerServices
         _clientManagerPage.EnterZip(clientData.Zip);
         _clientManagerPage.SelectStatus(clientData.Status);
         _clientManagerPage.SelectRegion(clientData.Region);
-        //_clientManagerPage.QuickBooksId(clientData.QuickbooksId);
+        _clientManagerPage.QuickBooksId(clientData.QuickbooksId);
         
         _clientManagerPage.ClickSave();
         
