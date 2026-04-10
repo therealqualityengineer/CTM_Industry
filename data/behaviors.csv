@@ -1,6 +1,6 @@
 "BROKEN","EPIC","FAILED","FEATURE","PASSED","SKIPPED","STORY","UNKNOWN"
-"0","","2","To Verify Client Manager functionalities","0","0","","0"
 "0","","4","To Verify Temp Manager functionalities","0","0","","0"
-"0","","1","Login functionality","0","0","","0"
+"0","","2","To Verify Client Manager functionalities","0","0","","0"
 "0","","2","To Verify Order Manager functionalities","1","0","","0"
+"0","","1","Login functionality","0","0","","0"
 "0","","0","To Verify LongTerm Order Manager functionalities","1","0","","0"
