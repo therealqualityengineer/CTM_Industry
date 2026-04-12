@@ -67,7 +67,7 @@ public class ApiSteps
     {
         var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            { "orderId", ScenarioKeys.OrderId },
+            { "orderid", ScenarioKeys.OrderId },
             { "tempId", ScenarioKeys.TempId },
             { "clientId", ScenarioKeys.ClientId },
             { "lt_orderId", ScenarioKeys.LTorderId }

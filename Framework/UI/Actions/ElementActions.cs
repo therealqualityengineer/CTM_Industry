@@ -18,6 +18,11 @@ public class ElementActions
         _driver = driverManager.Driver;
     }
 
+    public IWebElement GetElement(By locator)
+    {
+        return _waitService.WaitForElementVisible(locator);
+    }
+    
     public void Click(By locator)
     {
         try
@@ -140,5 +145,14 @@ public class ElementActions
     public void WaitForDomStability(int milliseconds = 2000)
     {
         Thread.Sleep(milliseconds); // controlled usage
+    }
+    
+    public void TypeAmount(By locator, string value)
+    {
+        var js = (IJavaScriptExecutor)_driver;
+
+        js.ExecuteScript(
+            "arguments[0].value = arguments[1]; arguments[0].dispatchEvent(new Event('change'));",
+            GetElement(locator), value);
     }
 }

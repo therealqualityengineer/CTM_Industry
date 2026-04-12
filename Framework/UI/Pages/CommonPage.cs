@@ -16,6 +16,7 @@ public class CommonPage
     private readonly By _clientSearchSeletor = By.Id("ClientEqualsOrContains_context");
     private readonly By _clientSearchText = By.Id("ClientEqualsOrContains_contains");
     private readonly By _ltorderSearchBox = By.Id("assignmentIDs");
+    private readonly By _ratesheetSearchBox = By.Id("ratesheetIDs");
     public By _subnavtext(string text) => By.XPath($"//a[text()='{text}']");
     public By _labelText(string text) => By.XPath($"//label[contains(text(),'{text}')]");
     
@@ -71,6 +72,9 @@ public class CommonPage
         {
             case "assignmentid":
                 _actions.Type(_ltorderSearchBox, filterValue);
+                break;
+            case "ratesheetid":
+                _actions.Type(_ratesheetSearchBox, filterValue);
                 break;
             default:
                 throw  new NotFoundException($"The filter {filterFiled} was not found.");

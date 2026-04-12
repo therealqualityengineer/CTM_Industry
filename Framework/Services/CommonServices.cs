@@ -56,6 +56,6 @@ public class CommonServices : ICommonServices
         {
             _commonPage.TypeInNewSearchBox(filterValue.Key, filterValue.Value);
         }
-        _commonPage.SubmitSearch();
+        _commonPage.SubmitSearch(); 
     }
 }

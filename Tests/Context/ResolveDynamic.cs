@@ -12,30 +12,26 @@ public class ResolveDynamic
     {
         if (string.IsNullOrWhiteSpace(input))
             return input;
-        if(input.Contains("<scenario_clientname>", StringComparison.OrdinalIgnoreCase))
+
+        var map = new Dictionary<string, Func<string>>(StringComparer.OrdinalIgnoreCase)
         {
-            input = input.Replace("<scenario_clientname>", _scenarioData.Get<string>(ScenarioKeys.ClientName));
-        }
-        if (input.Contains("<scenario_tempfirstname>", StringComparison.OrdinalIgnoreCase))
+            ["<scenario_clientname>"] = () => _scenarioData.Get<string>(ScenarioKeys.ClientName),
+            ["<scenario_tempfirstname>"] = () => _scenarioData.Get<string>(ScenarioKeys.TempFirstName),
+            ["<scenario_tempid>"] = () => _scenarioData.Get<string>(ScenarioKeys.TempId),
+            ["<scenario_clientid>"] = () => _scenarioData.Get<string>(ScenarioKeys.ClientId),
+            ["<scenario_ltorderid>"] = () => _scenarioData.Get<string>(ScenarioKeys.LTorderId),
+            ["<scenario_orderid>"] = () => _scenarioData.Get<string>(ScenarioKeys.OrderId),
+            ["<scenario_ratesheetid>"] = () => _scenarioData.Get<string>(ScenarioKeys.RatesheetId)
+        };
+
+        foreach (var kvp in map)
         {
-            input = input.Replace("<scenario_tempfirstname>", _scenarioData.Get<string>(ScenarioKeys.TempFirstName));
+            if (input.Contains(kvp.Key, StringComparison.OrdinalIgnoreCase))
+            {
+                input = input.Replace(kvp.Key, kvp.Value(), StringComparison.OrdinalIgnoreCase);
+            }
         }
-        if (input.Contains("<scenario_tempid>", StringComparison.OrdinalIgnoreCase))
-        {
-            input = input.Replace("<scenario_tempid>", _scenarioData.Get<string>(ScenarioKeys.TempId));
-        }
-        if (input.Contains("<scenario_clientid>", StringComparison.OrdinalIgnoreCase))
-        {
-            input = input.Replace("<scenario_clientid>", _scenarioData.Get<string>(ScenarioKeys.ClientId));
-        }
-        if (input.Contains("<scenario_ltorderid>", StringComparison.OrdinalIgnoreCase))
-        {
-            input = input.Replace("<scenario_ltorderid>", _scenarioData.Get<string>(ScenarioKeys.LTorderId));
-        }
-        if (input.Contains("<scenario_orderid>", StringComparison.OrdinalIgnoreCase))
-        {
-            input = input.Replace("<scenario_orderid>", _scenarioData.Get<string>(ScenarioKeys.OrderId));
-        }
+
         return input;
     }
 }
