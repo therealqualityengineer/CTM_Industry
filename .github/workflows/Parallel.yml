@@ -15,7 +15,7 @@ on:
           - api
 
   schedule:
-    - cron: '30 3 * * *'
+    - cron: '0 1 * * *'
 
 permissions:
   contents: write
