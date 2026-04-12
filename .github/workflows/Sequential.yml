@@ -3,7 +3,7 @@ name: Full Sequential Test Run
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 1 * * *'  # daily run
+    - cron: '0 2 * * *'  # daily run
 
 permissions:
   contents: write
