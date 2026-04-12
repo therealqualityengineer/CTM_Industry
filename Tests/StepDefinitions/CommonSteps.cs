@@ -10,11 +10,13 @@ public class CommonSteps
 {
     private readonly ICommonServices  _commonServices;
     private readonly ScenarioData _scenarioData;
+    private readonly ResolveDynamic _resolveDynamic;
         
-    public CommonSteps(ICommonServices commonServices, ScenarioData scenarioData)
+    public CommonSteps(ICommonServices commonServices, ScenarioData scenarioData, ResolveDynamic resolveDynamic)
     {
         _commonServices = commonServices;
         _scenarioData = scenarioData;
+        _resolveDynamic = resolveDynamic;
     }
     
     [Given("user navigate to the {string} tab")]
@@ -53,5 +55,13 @@ public class CommonSteps
                 throw new NotSupportedException($"Profile {profile} is not found");
         }
         _commonServices.NavigateToProfilePage(profile,id);
+    }
+
+    [Given("the user filter following details in new search box")]
+    public void GivenTheUserFilterFollowingDetailsInNewSearchBox(Reqnroll.Table table)
+    {
+        var resolvedData = table.Rows.ToDictionary(row => row[0],  row => _resolveDynamic.ResolveDynamicValues(row[1]));
+        
+        _commonServices.FilterOnNewSearchBox(resolvedData);
     }
 }

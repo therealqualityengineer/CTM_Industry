@@ -70,7 +70,7 @@ public class ApiSteps
             { "orderId", ScenarioKeys.OrderId },
             { "tempId", ScenarioKeys.TempId },
             { "clientId", ScenarioKeys.ClientId },
-            { "ltorderId", ScenarioKeys.LTorderId }
+            { "lt_orderId", ScenarioKeys.LTorderId }
         };
         
         if (map.TryGetValue(key, out var scenarioKey))

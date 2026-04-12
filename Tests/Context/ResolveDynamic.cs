@@ -28,6 +28,14 @@ public class ResolveDynamic
         {
             input = input.Replace("<scenario_clientid>", _scenarioData.Get<string>(ScenarioKeys.ClientId));
         }
+        if (input.Contains("<scenario_ltorderid>", StringComparison.OrdinalIgnoreCase))
+        {
+            input = input.Replace("<scenario_ltorderid>", _scenarioData.Get<string>(ScenarioKeys.LTorderId));
+        }
+        if (input.Contains("<scenario_orderid>", StringComparison.OrdinalIgnoreCase))
+        {
+            input = input.Replace("<scenario_orderid>", _scenarioData.Get<string>(ScenarioKeys.OrderId));
+        }
         return input;
     }
 }

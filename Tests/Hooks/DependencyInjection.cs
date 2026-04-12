@@ -44,6 +44,7 @@ public class DependencyInjection
         services.AddScoped<ITempManagerServices, TempManagerService>();
         services.AddScoped<IClientManagerServices, ClientManagerServices>();
         services.AddScoped<IOrderManagerServices, OrderManagerServices>();
+        services.AddScoped<ILtOrderServices, LtOrderServices>();
 
         // Pages
         services.AddScoped<TempManagerPage>();
@@ -52,6 +53,7 @@ public class DependencyInjection
         services.AddScoped<BasePage>();
         services.AddScoped<ClientManagerPage>();
         services.AddScoped<OrderManagerPage>();
+        services.AddScoped<LtOrderPage>();
         services.AddScoped<ApiClient>();
         services.AddScoped<ApiService>();
         services.AddScoped<TestDataGenerator>();

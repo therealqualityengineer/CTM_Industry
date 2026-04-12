@@ -4,6 +4,7 @@ using Framework.Interfaces;
 using Framework.UI.Pages;
 using Infrastructure.UI.Pages;
 using NUnit.Framework;
+using OpenQA.Selenium;
 
 namespace Framework.Services;
 
@@ -46,5 +47,15 @@ public class CommonServices : ICommonServices
     public void NavigateToProfilePage(string profileName, string id)
     {
         _commonPage.NavigateTo(profileName, id);
+    }
+
+    public void FilterOnNewSearchBox(Dictionary<string, string> filterValues)
+    {
+        _commonPage.ResetSearchBox();
+        foreach (var filterValue in filterValues)
+        {
+            _commonPage.TypeInNewSearchBox(filterValue.Key, filterValue.Value);
+        }
+        _commonPage.SubmitSearch();
     }
 }

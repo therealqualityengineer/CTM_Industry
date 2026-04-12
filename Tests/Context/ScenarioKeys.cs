@@ -10,4 +10,5 @@ public static class ScenarioKeys
     public const string ClientName = "ClientName";
     public const string OrderId = "OrderId";
     public const string LTorderId = "LTorderId";
+    public const string RatesheetId = "RatesheetId";
 }
