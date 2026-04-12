@@ -1,0 +1,126 @@
+name: Full Sequential Test Run
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * *'  # daily run
+
+permissions:
+  contents: write
+
+jobs:
+  run-all-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      CI: true
+      BROWSER: chrome
+      USE_GRID: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install Chrome
+        run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
+
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline --save-dev
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --no-restore
+
+      # 🔥 Run ALL tests (TRUE SEQUENTIAL)
+      - name: Run All Tests
+        run: |
+          mkdir -p TestResults
+
+          echo "Running FULL test suite (Sequential)"
+
+          dotnet test --no-build \
+            --settings test.runsettings \
+            --logger "trx;LogFileName=results.trx" \
+            --results-directory TestResults \
+            --filter "Category!=wip"
+        env:
+          CI: true
+          BROWSER: chrome
+          USE_GRID: false
+
+      # 🔥 Extract Failed Tests
+      - name: Extract Failed Tests
+        if: failure()
+        run: |
+          echo "Extracting failed tests..."
+
+          FAILED_TESTS=$(grep -oP '(?<=testName=").*?(?=")' TestResults/results.trx | tr '\n' '|')
+
+          echo "FAILED_TESTS=$FAILED_TESTS" >> $GITHUB_ENV
+
+          echo "Failed tests:"
+          echo "$FAILED_TESTS"
+
+      # 🔁 Re-run ONLY failed tests (also sequential)
+      - name: Re-run Failed Tests
+        if: failure()
+        run: |
+          if [ -z "$FAILED_TESTS" ]; then
+            echo "No failed tests found"
+            exit 0
+          fi
+
+          echo "Re-running: $FAILED_TESTS"
+
+          dotnet test --no-build \
+            --settings test.runsettings \
+            --filter "FullyQualifiedName~$FAILED_TESTS"
+        env:
+          CI: true
+          BROWSER: chrome
+          USE_GRID: false
+
+      # 🔥 Generate Allure Report
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          allure generate Tests/bin/Debug/net8.0/allure-results -o allure-report --clean
+
+      # 🔥 Deploy Report to GitHub Pages
+      - name: Deploy Allure Report
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+
+      # 🔗 Print Report URL
+      - name: Print Report URL
+        run: |
+          echo "🔗 Report URL:"
+          echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+
+      # 🔔 Slack Notification
+      - name: Send Slack Notification
+        if: always()
+        run: |
+          STATUS="SUCCESS"
+          if [ "${{ job.status }}" != "success" ]; then
+            STATUS="FAILED"
+          fi
+
+          REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+
+          MESSAGE="🚀 *Full Test Run ${STATUS}*
+          🔹 Repo: ${{ github.repository }}
+          🔹 Run #: ${{ github.run_number }}
+          🔗 Report: ${REPORT_URL}"
+
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"$MESSAGE\"}" \
+          ${{ secrets.SLACK_WEBHOOK }}
