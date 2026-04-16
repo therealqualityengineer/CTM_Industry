@@ -1,0 +1,10 @@
+﻿Field,Value
+Field,Value
+ClientName,<uniqueString>
+Address,16801 Addison Road
+City,Addison
+State,TX
+Zip,75001
+Status,Active
+Region,JasonTest
+QuickbooksId,<uniqueNumber>

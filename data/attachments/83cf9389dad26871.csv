@@ -1,0 +1,8 @@
+﻿Field,Value
+clientName,<uniqueString>
+Address,234 Crooked Creek Parkway
+City,Durham
+State,NC
+Zip,27713
+status,Active
+regionId,1
