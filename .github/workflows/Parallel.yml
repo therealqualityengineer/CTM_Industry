@@ -14,8 +14,8 @@ on:
           - regression
           - api
 
-  schedule:
-    - cron: '0 1 * * *'
+ # schedule:
+ #  - cron: '0 1 * * *'
 
 permissions:
   contents: write
