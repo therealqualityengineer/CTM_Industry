@@ -47,7 +47,6 @@ jobs:
             --settings test.runsettings \
             --logger "trx;LogFileName=results.trx" \
             --results-directory TestResults \
-            --filter "Category!=wip"
         env:
           CI: true
           BROWSER: chrome
