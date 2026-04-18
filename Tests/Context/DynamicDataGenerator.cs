@@ -1,4 +1,6 @@
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Tests.Context;
 
@@ -35,22 +37,17 @@ public class DynamicDataGenerator
         if (string.IsNullOrWhiteSpace(input))
             return input;
 
-        if (input.Contains("<uniqueString>", StringComparison.OrdinalIgnoreCase))
+        input = input.Replace("<uniqueString>", RandomWord(7), StringComparison.OrdinalIgnoreCase);
+        input = input.Replace("<uniqueNumber>", RandomNumber(7), StringComparison.OrdinalIgnoreCase);
+        input = input.Replace("<uniqueEmail>", RandomEmail(), StringComparison.OrdinalIgnoreCase);
+        input = input.Replace("<timestamp>", Timestamp(), StringComparison.OrdinalIgnoreCase);
+
+        // ✅ Dynamic getDate handling
+        input = Regex.Replace(input, @"<getDate\+(\d+)>", match =>
         {
-            input = input.Replace("<uniqueString>", RandomWord(7));
-        }
-        if (input.Contains("<uniqueNumber>", StringComparison.OrdinalIgnoreCase))
-        {
-            input = input.Replace("<uniqueNumber>", RandomNumber(7));
-        }
-        if (input.Contains("<uniqueEmail>", StringComparison.OrdinalIgnoreCase))
-        {
-            input = input.Replace("<uniqueEmail>", RandomEmail());
-        }
-        if (input.Contains("<timestamp>", StringComparison.OrdinalIgnoreCase))
-        {
-            input = input.Replace("<timestamp>", Timestamp());
-        }
+            return GetDate(match.Value);
+        }, RegexOptions.IgnoreCase);
+
         return input;
     }
 
@@ -64,5 +61,11 @@ public class DynamicDataGenerator
         }
 
         return builder.ToString();
+    }
+
+    private string GetDate(string token)
+    {
+        var days = int.Parse(Regex.Match(token, @"\d+").Value);
+        return DateTime.Today.AddDays(days).ToString("dd-MM-yyyy");
     }
 }

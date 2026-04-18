@@ -151,5 +151,9 @@ Feature: To Verify LongTerm Order Manager functionalities
           | Item      | Pay Frequency | Amount | Days per Week | Defer to Date | Prorate / Cap | Hours per Period |
           | Allowance | One-Time      | 5      | N/A           | N/A           | N/A           | 40               |
           | Bonus     | Weekly        | 5      | N/A           | N/A           | N/A           | 36               |
+        And the user adds the following 'Non Taxable Item' to the ratesheet
+          | Item       | Pay Frequency | Amount | Days per Week | Defer to Date | Prorate / Cap | Hours per Period |
+          | Housing    | Weekly        | 2      | 4 days        | N/A           | Prorated      | 40               |
+          | TravelFrom | One-Time      | 10     | N/A           | <getDate+3>   | Prorated      | 36               |
         Then the user saves the ratesheet
   

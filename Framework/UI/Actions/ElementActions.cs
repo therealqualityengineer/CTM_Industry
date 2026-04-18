@@ -9,6 +9,7 @@ public class ElementActions
 {
     private readonly WaitService _waitService;
     private readonly IWebDriver _driver;
+    private Dictionary<string, string> _windows = new Dictionary<string, string>();
     
     public IWebDriver Driver => _driver;
 
@@ -126,20 +127,35 @@ public class ElementActions
         WaitForDomStability();
         Click(optionLocator);
     }
-
-    public void SwitchToWindow(string pageTitle)
+    
+    public void RegisterParentWindow()
+    {
+        _windows["Parent"] = _driver.CurrentWindowHandle;
+    }
+    
+    public void SwitchToNewWindow(string windowName)
     {
         _waitService.WaitForNumberOfWindows();
 
-        foreach (var window in _driver.WindowHandles)
+        foreach (var handle in _driver.WindowHandles)
         {
-            _driver.SwitchTo().Window(window);
+            if (_windows.ContainsValue(handle))
+                continue;
 
-            if (_driver.Title == pageTitle)
-                return;
+            _driver.SwitchTo().Window(handle);
+
+            _windows[windowName] = handle; // ✅ map "Child" → handle
+            return;
         }
+        throw new Exception($"No new window found for {windowName}");
+    }
+    
+    public void SwitchToWindow(string windowName)
+    {
+        if (!_windows.ContainsKey(windowName))
+            throw new Exception($"Window '{windowName}' not registered");
 
-        throw new Exception($"Unable to find page title: {pageTitle}");
+        _driver.SwitchTo().Window(_windows[windowName]);
     }
 
     public void WaitForDomStability(int milliseconds = 2000)

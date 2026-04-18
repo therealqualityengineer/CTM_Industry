@@ -63,12 +63,12 @@ public class OrderManagerPage
 
     public void SwitchToEditOrderWindow()
     {
-        _commonPage.SwitchToPage("Edit Orders");
+        _commonPage.SwitchToWindow("Child");
     }
     
     public void SwitchToOrderManagerWindow()
     {
-        _commonPage.SwitchToPage("Order Manager");
+        _commonPage.SwitchToWindow("Parent");
     }
     
     public void NavigateToNewOrderPage()

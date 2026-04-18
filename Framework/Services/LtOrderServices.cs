@@ -8,6 +8,8 @@ public class LtOrderServices : ILtOrderServices
     private readonly LtOrderPage _ltOrderPages;
     private readonly CommonPage _commonPage;
     
+    int _iteration = 0;
+    
     public LtOrderServices(LtOrderPage ltOrderPage, CommonPage commonPage)
     {
         _ltOrderPages = ltOrderPage;
@@ -26,7 +28,7 @@ public class LtOrderServices : ILtOrderServices
 
     public void AddChangestoRatesheetId(string item, List<Dictionary<string,string>> itemTable)
     {
-        int n = 0;
+        
         foreach (var row in itemTable)
         {
             if (item.Equals("Taxable Item"))
@@ -38,7 +40,7 @@ public class LtOrderServices : ILtOrderServices
                 _ltOrderPages.AddNonTaxableItem();
             }
 
-            n = n + 1;
+            _iteration = _iteration + 1;
             foreach (var field in row)
             {
                 var header = field.Key;
@@ -46,7 +48,7 @@ public class LtOrderServices : ILtOrderServices
 
                 if (!value.Contains("N/A"))
                 {
-                    _ltOrderPages.AddChangestoRatesheet(header, value, n);
+                    _ltOrderPages.AddChangestoRatesheet(header, value, _iteration);
                 }
             }
         }

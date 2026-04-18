@@ -12,13 +12,15 @@ public class LTOrderStep
     private readonly ScenarioData _scenarioData;
     private readonly ResolveDynamic _resolveDynamic;
     private readonly ICommonServices _commonServices;
+    private readonly DynamicDataGenerator _dynamicDataGenerator;
    
-    public LTOrderStep(ILtOrderServices ltOrderServices, ScenarioData scenarioData, ResolveDynamic resolveDynamic, ICommonServices commonServices)
+    public LTOrderStep(ILtOrderServices ltOrderServices, ScenarioData scenarioData, ResolveDynamic resolveDynamic, ICommonServices commonServices, DynamicDataGenerator dynamicDataGenerator)
     {
         _ltOrderServices = ltOrderServices;
         _scenarioData = scenarioData;
         _resolveDynamic = resolveDynamic;
         _commonServices = commonServices;
+        _dynamicDataGenerator = dynamicDataGenerator;
     }
 
 
@@ -50,7 +52,7 @@ public class LTOrderStep
     [Given("the user adds the following {string} to the ratesheet")]
     public void GivenTheUserAddsTheFollowingToTheRatesheet(string item, Reqnroll.Table table)
     {
-        var itemTable = table.Rows.Select(r => table.Header.ToDictionary(h => h, h => r[h])).ToList();
+        var itemTable = table.Rows.Select(r => table.Header.ToDictionary(h => h, h => _dynamicDataGenerator.Resolve(r[h]))).ToList();
         _ltOrderServices.AddChangestoRatesheetId(item, itemTable);
     }
 }

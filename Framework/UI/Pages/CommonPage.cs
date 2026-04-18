@@ -19,6 +19,7 @@ public class CommonPage
     private readonly By _ratesheetSearchBox = By.Id("ratesheetIDs");
     public By _subnavtext(string text) => By.XPath($"//a[text()='{text}']");
     public By _labelText(string text) => By.XPath($"//label[contains(text(),'{text}')]");
+    public By _devtext(string text) => By.XPath($"//div[contains(.,'{text}')]");
     
     public CommonPage(ElementActions elementActions,  IConfig config)
     {
@@ -36,9 +37,17 @@ public class CommonPage
         _actions.Driver.Navigate().GoToUrl($"{_config.BaseUrl}{pageName}");
     }
     
-    public void SwitchToPage(string pageName)
+    public void SwitchToWindow(string window)
     {
-        _actions.SwitchToWindow(pageName);
+        _actions.RegisterParentWindow();
+        if (window.Equals("Child", StringComparison.OrdinalIgnoreCase))
+        {
+            _actions.SwitchToNewWindow(window);
+        }
+        else
+        {
+            _actions.SwitchToWindow(window);
+        }
     }
     
     public void NewSearchBoxwithClientSeach(string clientName)

@@ -33,7 +33,7 @@ public class LtOrderPage
     public string CreateRateSheetFromLto()
     {
         _elementActions.Click(_rateSheetButton);
-        _commonPage.SwitchToPage("Rate Sheet");
+        _commonPage.SwitchToWindow("Child");
         Assert.That(_elementActions.IsElementDisplayed(_commonPage._labelText("New Rate Sheet")),  Is.True, "New Rate Sheet is not displayed");
         _elementActions.Click(_saveRatesheetButton);
        Assert.That(_elementActions.IsElementDisplayed(_ratesheetMessageAlert),  Is.True, "Rate sheet message alert is not displayed");
@@ -43,7 +43,7 @@ public class LtOrderPage
     public void OpenRatesheet(string ratesheetId)
     {
         _elementActions.Click(_openRatesheet(ratesheetId));
-        _commonPage.SwitchToPage("Rate Sheet");
+        _commonPage.SwitchToWindow("Child");
     }
 
     public void AddTaxableItem()
