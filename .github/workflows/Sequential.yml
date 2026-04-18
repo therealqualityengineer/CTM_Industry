@@ -3,7 +3,7 @@ name: Full Sequential Test Run
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 2 * * *'  # daily run
+    - cron: '0 2 * * *'  # daily run (7:30 AM IST)
 
 permissions:
   contents: write
@@ -47,6 +47,7 @@ jobs:
             --settings test.runsettings \
             --logger "trx;LogFileName=results.trx" \
             --results-directory TestResults \
+            --filter "Category!=wip"
         env:
           CI: true
           BROWSER: chrome
@@ -83,6 +84,25 @@ jobs:
           CI: true
           BROWSER: chrome
           USE_GRID: false
+
+      # ✅ Checkout previous Allure report (for history)
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+        continue-on-error: true
+
+      # ✅ Copy history into new results
+      - name: Copy Allure History
+        run: |
+          if [ -d "gh-pages/history" ]; then
+            echo "Copying Allure history..."
+            mkdir -p Tests/bin/Debug/net8.0/allure-results/history
+            cp -r gh-pages/history/* Tests/bin/Debug/net8.0/allure-results/history
+          else
+            echo "No history found (first run)"
+          fi
 
       # 🔥 Generate Allure Report
       - name: Generate Allure Report
