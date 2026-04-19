@@ -1,0 +1,3 @@
+﻿Item,Pay Frequency,Amount,Days per Week,Defer to Date,Prorate / Cap,Hours per Period
+Housing,Weekly,2,4 days,N/A,Prorated,40
+TravelFrom,One-Time,10,N/A,<getDate+3>,Prorated,36

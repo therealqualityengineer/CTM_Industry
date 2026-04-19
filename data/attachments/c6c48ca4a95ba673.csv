@@ -1,0 +1,12 @@
+﻿Field,Value
+firstName,<uniqueString>
+lastName,<uniqueString>
+status,Active
+homeregion,1
+certification,RN
+specialty,ER
+Email,<uniqueEmail>
+Address,16801 Addison Road
+City,Addison
+State,TX
+Zip,75001

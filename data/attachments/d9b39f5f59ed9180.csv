@@ -1,0 +1,8 @@
+﻿Field,Value
+clientName,<uniqueString>
+Address,16801 Addison Road
+City,Addison
+State,TX
+Zip,75001
+status,Active
+regionId,1
