@@ -2,8 +2,6 @@ name: Full Sequential Test Run
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 2 * * *'  # daily run (7:30 AM IST)
 
 permissions:
   contents: write
